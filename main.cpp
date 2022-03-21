@@ -4,32 +4,43 @@
 #include <vector>
 #include <string>
 
+bool isCharDigit(const QChar &c) {
+    return (c.isDigit() || c == '.' || c == '-');
+}
+
+QString top1(bool startsWithDigit, const QString &str, QString &rest, bool &isLetters) {
+    QString top;
+    for(QChar c : str) {
+        if (startsWithDigit ? isCharDigit(c) : !isCharDigit(c)) {
+            isLetters = !startsWithDigit;
+            top.append(c);
+        } else {
+            rest = str.mid(top.length(), str.length());
+            break;
+        }
+    }
+    return top;
+}
+
 QString topOfString(const QString &str, QString &rest, bool &isLetters) {
     QString top;
     if (str.isEmpty()) {
         isLetters = false;
         return top;
     }
-    bool startsWithLetter = !str[0].isDigit();
-    if (startsWithLetter)
-        for(QChar c : str) {
-            if (!c.isDigit()) {
-                isLetters = true;
-                top.append(c);
-            } else {
-                rest = str.mid(top.length(), str.length());
-                break;
-            }
+    bool startsWithDigit = isCharDigit(str[0]);
+//    top = top1(startsWithDigit, str, rest, isLetters);
+
+    for(QChar c : str) {
+        if (startsWithDigit ? isCharDigit(c) : !isCharDigit(c)) {
+            isLetters = !startsWithDigit;
+            top.append(c);
+        } else {
+            rest = str.mid(top.length(), str.length());
+            break;
         }
-    else
-        for(QChar c : str) {
-            if (c.isDigit() || c == '.' || c == '-') {
-                top.append(c);
-            } else {
-                rest = str.mid(top.length(), str.length());
-                break;
-            }
-        }
+    }
+
 
     return top;
 }
@@ -61,11 +72,11 @@ bool compareStringsRecursively(const QString &l, const QString &r) {
         else
             return lTop.toInt() < rTop.toInt();
     } else {
-        //            return (!is_lTopLetters);
-        if (!is_lTopLetters)
-            return true;
-        else
-            return false;
+                    return (!is_lTopLetters);
+//        if (!is_lTopLetters)
+//            return true;
+//        else
+//            return false;
     }
 }
 
